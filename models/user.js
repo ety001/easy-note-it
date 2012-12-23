@@ -20,7 +20,7 @@ User.prototype.save = function save(callback){
 				mongodb.close();
 				return callback(err);
 			}
-			collection.ensureIndex('email', {unique: true});
+			//collection.ensureIndex('email', {unique: true});
 			collection.insert(user, {safe: true}, function(err, user){
 				mongodb.close();
 				callback(err, user);

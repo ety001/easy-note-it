@@ -30,7 +30,7 @@ exports.add = function(req, res){
 		password: password,
 	});
 
-	User.get(newUser.name, function(err , user){
+	User.get(newUser.email, function(err , user){
 		if(user){
 			err = 'Email already exists.';
 		}
