@@ -6,6 +6,7 @@
 var express = require('express')
 	, note_index = require('./controller/index')
 	, user = require('./controller/user')
+	, notes_info = require('./controller/ajax_note.js')
 	, http = require('http')
 	, path = require('path')
 	, MongoStore = require('connect-mongo')(express)
@@ -27,7 +28,7 @@ app.configure(function(){
 	app.use(partials());
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
-	app.use(flash());//flush must beford session
+	app.use(flash());
 	app.use(express.cookieParser());
 	app.use(express.session({
 		secret: settings.cookieSecret,
@@ -39,16 +40,11 @@ app.configure(function(){
 	app.use(express.static(path.join(__dirname, 'public')));
 });
 
-app.use(function(req, res, next){
-	app.locals.email = req.session.email;
-	//res.locals.uid = req.session.index;
-	app.locals.session = req.session;
-	app.locals.csrf = req.session ? req.session._csrf : '';
-	app.locals.email_error = req.flash('email_error').length ? req.flash('email_error') : '';
-	app.locals.pass_error = req.flash('pass_error').length ? req.flash('pass_error') : '';
-	console.log(app.locals.pass_error);
-	app.locals.error = req.flash('error').length ? req.flash('error') : '';
-	app.locals.success = req.flash('success').length ? req.flash('success') : '';
+app.use(function(req, res ,next){
+	app.locals({
+  		session: req.session,
+  		msg: req.flash('msg')
+	});
 	next();
 });
 
@@ -61,6 +57,9 @@ app.get('/users', user.list);
 app.post('/reg', user.add);
 app.get('/reg', user.reg);
 app.get('/signin', user.signin);
+app.post('/signin', user.login);
+app.get('/logout', user.logout);
+app.post('/getnote', notes_info.getNote);
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));

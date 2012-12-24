@@ -35,7 +35,7 @@
 								<ul class="dropdown-menu">
 									<li><a href="#">Setting</a></li>
 									<li class="divider"></li>
-									<li><a href="#">Log Out</a></li>
+									<li><a href="/logout">Log Out</a></li>
 								</ul>
 							</li>
 						</ul>
@@ -43,6 +43,7 @@
 				</div>
 			</div>
 		</div>
+		<% if(msg != ''){ %><div class="alert alert-success"><%= msg %></div><% } %>
 		<%- body %>
 		<script src="/javascripts/jquery.js"></script>
 		<script src="/javascripts/bootstrap.js"></script>
