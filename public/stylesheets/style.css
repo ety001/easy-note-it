@@ -20,7 +20,7 @@
 	word-wrap: break-word;
 	white-space: normal;
 	margin: 10px;
-	cursor: move;
+	/*cursor: move;*/
 }
 .note_content{
 	margin: 10px;
@@ -45,4 +45,8 @@
     to {
     -webkit-transform: rotate(330deg);
     }
+}
+
+.hand-cursor{
+	cursor: pointer;
 }

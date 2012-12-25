@@ -59,10 +59,11 @@ Notes.prototype.update = function (callback){
 	});
 };
 
-Notes.prototype.delete = function (callback){
+Notes.delete = function (note_id , callback){
 	var note = {
-		_id: this.id
+		_id: new ObjectID(note_id)
 	};
+
 	mongodb.open(function(err, db){
 		if(err){
 			mongodb.close();

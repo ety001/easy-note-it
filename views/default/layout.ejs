@@ -68,11 +68,10 @@
 						
 					},
 					success: function(data){
-						console.log(data);
 						var color_tag = ' note_blue ';
 						var html = '';
 						for(var k in data){
-							html = html +  '<div class="note '+ color_tag +' span3" data-note-id="'+ data[k]._id +'"><div class="note_content">'+ data[k].n_content +'</div></div>';
+							html = html +  '<div class="note '+ color_tag +' span3" data-note-id="'+ data[k]._id +'"><div class="note_content">'+ data[k].n_content +'</div><i class="icon-remove hand-cursor" onclick="remove(\''+ data[k]._id +'\');"></i></div>';
 						}
 						$('#note_list').append(html);
 					}
@@ -95,15 +94,23 @@
 						var color = result[0].n_color;
 						var color_tag = ' note_blue ';
 						//to do ---color tag switch
-						var html = '<div class="note '+ color_tag +' span3" data-note-id="'+ id +'"><div class="note_content">'+ content +'</div></div>';
+						var html = '<div class="note '+ color_tag +' span3" data-note-id="'+ id +'"><div class="note_content">'+ content +'</div><i class="icon-remove hand-cursor" onclick="remove(\''+ id +'\');"></i></div>';
 						$('#note_list').append(html);
 						$('#loading').hide();
 						$('#newN').val('');
 						//$('.note').draggable();
 						$('#newNote').modal('hide');
-					},
-					error: function(jqXHR, textStatus, errorThrown) {  
-						console.log('error ' + textStatus + " " + errorThrown);  
+					}
+				});
+			}
+			function remove(note_id){
+				$.ajax({
+					type: 'post',
+					url: '/remove',
+					data: {_id: note_id},
+					dataType: 'json',
+					success: function(result){
+						$('[data-note-id=' + note_id + ']').remove();
 					}
 				});
 			}

@@ -69,6 +69,7 @@ app.post('/signin', user.login);
 app.get('/logout', user.logout);
 app.post('/save', notes_info.insert);
 app.post('/getAll', notes_info.getNote);
+app.post('/remove', notes_info.remove);
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));

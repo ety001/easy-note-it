@@ -41,3 +41,19 @@ exports.insert = function(req, res){
 		res.send(json_txt);
 	});
 };
+
+exports.remove = function(req, res){
+	if(req.session.user == '' || req.session.user == undefined){
+		return res.redirect('/signin');
+	}
+	Notes.delete( req.body._id , function(err , result){
+		if(err){
+			res.header('Content-Type', 'text/plain');
+			err = JSON.stringify(err); 
+			res.send(err);
+		}
+		res.header('Content-Type', 'text/plain');
+		var json_txt = JSON.stringify(result); 
+		res.send(json_txt);
+	});
+};
