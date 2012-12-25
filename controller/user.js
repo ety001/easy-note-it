@@ -8,14 +8,16 @@ var User = require('../models/user.js');
 exports.reg = function(req, res){
 	res.render('reg', {
 		title: 'Easy Note It',
-		err: req.flash('err')
+		msg: req.flash('msg')?req.flash('msg'):null,
+		err: req.flash('err')?req.flash('err'):null,
 	});
 };
 
 exports.signin = function(req, res){
 	res.render('signin', {
 		title: 'Easy Note It',
-		err: req.flash('err')
+		msg: req.flash('msg')?req.flash('msg'):null,
+		err: req.flash('err')?req.flash('err'):null,
 	});
 };
 

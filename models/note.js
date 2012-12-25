@@ -1,14 +1,18 @@
 var mongodb = require('../lib/db');
 var ObjectID = require('mongodb').ObjectID;
 
-function User(user){
-	this.id = user._id;
-	this.email = user.email;
-	this.password = user.password;
+function Notes(note){
+	this.id = note._id;
+	this.n_content = note.n_content;
+	this.n_x = note.n_x;
+	this.n_y = note.n_y;
+	this.n_time = note.n_time;
+	this.n_cate = note.n_cate;
+	this.n_color = note.n_color;
 };
-module.exports = User;
+module.exports = Notes;
 
-User.prototype.save = function save(callback){
+Notes.prototype.save = function (callback){
 	var user = {
 		email: this.email,
 		password: this.password,
@@ -30,7 +34,7 @@ User.prototype.save = function save(callback){
 	});
 };
 
-User.get = function get(email, callback){
+Notes.get = function (email, callback){
 	mongodb.open(function(err, db){
 		if(err){
 			return callback(err);
@@ -44,6 +48,7 @@ User.get = function get(email, callback){
 				mongodb.close();
 				if(doc){
 					var user = new User(doc);
+					console.log("ddd:"+user.id);
 					callback(err, user);
 				} else {
 					callback(err, null);
@@ -53,7 +58,7 @@ User.get = function get(email, callback){
 	});
 };
 
-User.checkLogin = function (loginInfo, callback){
+Notes.checkLogin = function (loginInfo, callback){
 	mongodb.open(function(err, db){
 		if(err){
 			return callback(err);

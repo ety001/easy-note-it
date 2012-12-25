@@ -4,18 +4,9 @@
 		<title><%= title %></title>
 		<link rel="stylesheet" href="/stylesheets/bootstrap.css" />
 		<link rel="stylesheet" href="/stylesheets/bootstrap-responsive.css" />
-		<style type="text/css">
-			body {
-				padding-top: 60px;
-				padding-bottom: 40px;
-			}
-			.sidebar-nav {
-				padding: 9px 0;
-			}
-		</style>
 	</head>
 	<body>
-		<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar navbar-inverse">
 			<div class="navbar-inner">
 				<div class="container-fluid">
 					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -24,26 +15,28 @@
 						<span class="icon-bar"></span>
 					</a>
 					<a class="brand" href="/">Easy Note It</a>
-					<div class="nav-collapse collapse">
-						<button class="btn btn-primary pull-right" type="button">+ Add</button>
+					<div class="nav-collapse collapse" id="top_control">
+						<% if(email){ %><button class="btn btn-primary pull-right" type="button" onclick="add_note();">+ Add</button><% } %>
 						<ul class="nav pull-right">
-							<!--<li class="active"><a href="#">Home</a></li>-->
+							<% if( !email){ %>
 							<li><a href="/signin">Sign In</a></li>
 							<li><a href="/reg">Register</a></li>
+							<% } else { %>
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Panel <b class="caret"></b></a>
 								<ul class="dropdown-menu">
-									<li><a href="#">Setting</a></li>
-									<li class="divider"></li>
+									<!--<li><a href="#">Setting</a></li>
+									<li class="divider"></li>-->
 									<li><a href="/logout">Log Out</a></li>
 								</ul>
 							</li>
+							<% } %>
 						</ul>
 					</div><!--/.nav-collapse -->
 				</div>
 			</div>
 		</div>
-		<% if(msg != ''){ %><div class="alert alert-success"><%= msg %></div><% } %>
+		<% if( !msg ){ %><div id="msg" class="alert alert-message"><%= msg %></div><% } %>
 		<%- body %>
 		<script src="/javascripts/jquery.js"></script>
 		<script src="/javascripts/bootstrap.js"></script>

@@ -28,25 +28,30 @@ app.configure(function(){
 	app.use(partials());
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
-	app.use(flash());
 	app.use(express.cookieParser());
+	app.use(flash());
 	app.use(express.session({
 		secret: settings.cookieSecret,
 		store: new MongoStore({
 			db: settings.db
 		})
 	}));
+	//app.use(flash());
+	app.use(function(req, res ,next){
+		app.locals({
+  			session: req.session?req.session:null,
+  			email: req.session.user?req.session.user.email:null,
+  			msg: req.flash('msg')?req.flash('msg'):null,
+			err: req.flash('err')?req.flash('err'):null,
+		});
+		console.log(app.locals);
+		next();
+	});
 	app.use(app.router);
 	app.use(express.static(path.join(__dirname, 'public')));
 });
 
-app.use(function(req, res ,next){
-	app.locals({
-  		session: req.session,
-  		msg: req.flash('msg')
-	});
-	next();
-});
+
 
 app.configure('development', function(){
 	app.use(express.errorHandler());

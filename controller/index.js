@@ -10,6 +10,7 @@ exports.index = function(req, res){
 	});
 	res.render('note_list', {
 		title: 'Easy Note It',
-		msg: req.flash('msg')
+		msg: req.flash('msg')?req.flash('msg'):null,
+		err: req.flash('err')?req.flash('err'):null,
 	});
 };
