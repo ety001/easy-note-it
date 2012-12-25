@@ -5,8 +5,15 @@ exports.getNote = function(req, res){
 	if(req.session.user == '' || req.session.user == undefined){
 		return res.redirect('/signin');
 	}
-	Notes.getAll(req.body.email , function(){
-		
+	Notes.getAll({n_email:req.session.user.email} , function(err , notes){
+		if(err){
+			res.header('Content-Type', 'text/plain');
+			err = JSON.stringify(err); 
+			res.send(err);
+		}
+		res.header('Content-Type', 'text/plain');
+		var json_txt = JSON.stringify(notes); 
+		res.send(json_txt);
 	});
 };
 
@@ -25,11 +32,9 @@ exports.insert = function(req, res){
 
 	note.insert(function(err, note){
 		if(err){
-			res.render('ajax_note',{
-				layout: 'ajax',
-				err: err?err:''
-			});
-			return;
+			res.header('Content-Type', 'text/plain');
+			err = JSON.stringify(err); 
+			res.send(err);
 		}
 		res.header('Content-Type', 'text/plain');
 		var json_txt = JSON.stringify(note); 

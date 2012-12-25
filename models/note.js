@@ -73,7 +73,7 @@ Notes.prototype.delete = function (callback){
 				mongodb.close();
 				return callback(err);
 			}
-			collection.remove(note, {w: 1}, function(err, result){
+			collection.findAndRemove(note, function(err, result){
 				mongodb.close();
 				callback(err, result);
 			});
@@ -81,7 +81,7 @@ Notes.prototype.delete = function (callback){
 	});
 };
 
-Notes.getAll = function (email, callback){
+Notes.getAll = function (conditions, callback){
 	mongodb.open(function(err, db){
 		if(err){
 			mongodb.close();
@@ -92,11 +92,10 @@ Notes.getAll = function (email, callback){
 				mongodb.close();
 				return callback(err);
 			}
-			collection.find({email: email}, function(err, doc){
+			collection.find(conditions).toArray(function(err, docs) {
 				mongodb.close();
-				if(doc){
-					var notes = new Notes(doc);
-					callback(err, notes);
+				if(docs){
+					callback(err, docs);
 				} else {
 					callback(err, null);
 				}
@@ -105,7 +104,7 @@ Notes.getAll = function (email, callback){
 	});
 };
 
-Notes.getOne = function (email, callback){
+Notes.getOne = function (id, callback){
 	mongodb.open(function(err, db){
 		if(err){
 			mongodb.close();
@@ -116,11 +115,11 @@ Notes.getOne = function (email, callback){
 				mongodb.close();
 				return callback(err);
 			}
-			collection.findOne({email: email}, function(err, doc){
+			collection.find({_id:id}, {explain:true}).toArray(function(err, docs) {
 				mongodb.close();
-				if(doc){
-					var notes = new Notes(doc);
-					callback(err, notes);
+				if(docs){
+					var note = new Notes(docs);
+					callback(err, note);
 				} else {
 					callback(err, null);
 				}

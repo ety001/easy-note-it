@@ -59,16 +59,22 @@
 		<script src="/javascripts/bootstrap.js"></script>
 		<script type="text/javascript">
 			$(function(){
-				$('.note').draggable();
+				//$('.note').draggable();
 				$.ajax({
 					type: 'post',
 					url: '/getAll',
 					dataType: 'json',
 					beforeSend: function(){
-						$().show();
-					},
-					success: function(){
 						
+					},
+					success: function(data){
+						console.log(data);
+						var color_tag = ' note_blue ';
+						var html = '';
+						for(var k in data){
+							html = html +  '<div class="note '+ color_tag +' span3" data-note-id="'+ data[k]._id +'"><div class="note_content">'+ data[k].n_content +'</div></div>';
+						}
+						$('#note_list').append(html);
 					}
 				});
 			});
@@ -89,11 +95,11 @@
 						var color = result[0].n_color;
 						var color_tag = ' note_blue ';
 						//to do ---color tag switch
-						var html = '<div class="note '+ color_tag +' span3" data-note-id="'+ id +'" style="left:555px; top: 237px;"><div class="note_content">'+ content +'</div></div>';
+						var html = '<div class="note '+ color_tag +' span3" data-note-id="'+ id +'"><div class="note_content">'+ content +'</div></div>';
 						$('#note_list').append(html);
 						$('#loading').hide();
 						$('#newN').val('');
-						$('.note').draggable();
+						//$('.note').draggable();
 						$('#newNote').modal('hide');
 					},
 					error: function(jqXHR, textStatus, errorThrown) {  

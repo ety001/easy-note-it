@@ -2,7 +2,9 @@
 	margin-top: 60px;
 }
 .note{
-	position: absolute;
+	/*position: absolute;*/
+	position: relative;
+	float: left;
 	display: block;
 	border-width: 1px;
 	border-style: solid;
@@ -17,6 +19,7 @@
 	line-height: 20px;
 	word-wrap: break-word;
 	white-space: normal;
+	margin: 10px;
 	cursor: move;
 }
 .note_content{
