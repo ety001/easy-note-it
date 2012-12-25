@@ -17,7 +17,8 @@ var app = express();
 
 app.configure(function(){
 	//server port
-	app.set('port', process.env.PORT || settings.port);
+	app.set('port', process.env.VMC_APP_PORT || settings.port);
+	app.set('host', process.env.VCAP_APP_HOST || 'localhost');
 	//view dir
 	app.set('views', __dirname + settings.view_dir + settings.templates_dir);
 	//view engine
@@ -40,24 +41,16 @@ app.configure(function(){
 	}));
 	app.use(flash());
 	app.use(function(req, res ,next){
-		//console.log("OK?:" + req.flash());
 		app.locals({
   			session: req.session?req.session:null,
   			email: req.session.user?req.session.user.email:null,
   			msg: req.flash('msg')?req.flash('msg'):null,
 			err: req.flash('err')?req.flash('err'):null,
 		});
-		//console.log(app.locals);
 		next();
 	});
 	app.use(app.router);
 	app.use(express.static(path.join(__dirname, 'public')));
-});
-
-
-
-app.configure('development', function(){
-	app.use(express.errorHandler());
 });
 
 app.get('/', note_index.index);
@@ -71,6 +64,6 @@ app.post('/save', notes_info.insert);
 app.post('/getAll', notes_info.getNote);
 app.post('/remove', notes_info.remove);
 
-http.createServer(app).listen(app.get('port'), function(){
+http.createServer(app).listen(app.get('port'), app.get('host'), function(){
 	console.log("Express server listening on port " + app.get('port'));
 });
