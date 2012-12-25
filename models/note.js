@@ -4,15 +4,40 @@ var ObjectID = require('mongodb').ObjectID;
 function Notes(note){
 	this.id = note._id;
 	this.n_content = note.n_content;
-	this.n_x = note.n_x;
-	this.n_y = note.n_y;
-	this.n_time = note.n_time;
 	this.n_cate = note.n_cate;
 	this.n_color = note.n_color;
+	this.n_email = note.n_email;
+	this.n_position = note.n_position;
 };
 module.exports = Notes;
 
-Notes.prototype.save = function (callback){
+Notes.prototype.insert = function (callback){
+	var note = {
+		n_content: this.n_content,
+		n_cate: this.n_cate,
+		n_color: this.n_color,
+		n_email: this.n_email,
+		n_position: this.n_position
+	};
+	mongodb.open(function(err, db){
+		if(err){
+			mongodb.close();
+			return callback(err);
+		}
+		db.collection('notes', function(err, collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+			collection.insert(note, {safe: true}, function(err, note){
+				mongodb.close();
+				callback(err, note);
+			});
+		});
+	});
+};
+
+Notes.prototype.update = function (callback){
 	var user = {
 		email: this.email,
 		password: this.password,
@@ -21,7 +46,7 @@ Notes.prototype.save = function (callback){
 		if(err){
 			return callback(err);
 		}
-		db.collection('users', function(err, collection){
+		db.collection('notes', function(err, collection){
 			if(err){
 				mongodb.close();
 				return callback(err);
@@ -34,22 +59,44 @@ Notes.prototype.save = function (callback){
 	});
 };
 
-Notes.get = function (email, callback){
+Notes.prototype.delete = function (callback){
+	var note = {
+		_id: this.id
+	};
 	mongodb.open(function(err, db){
 		if(err){
+			mongodb.close();
 			return callback(err);
 		}
-		db.collection('users', function(err, collection){
+		db.collection('notes', function(err, collection){
 			if(err){
 				mongodb.close();
 				return callback(err);
 			}
-			collection.findOne({email: email}, function(err, doc){
+			collection.remove(note, {w: 1}, function(err, result){
+				mongodb.close();
+				callback(err, result);
+			});
+		});
+	});
+};
+
+Notes.getAll = function (email, callback){
+	mongodb.open(function(err, db){
+		if(err){
+			mongodb.close();
+			return callback(err);
+		}
+		db.collection('notes', function(err, collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+			collection.find({email: email}, function(err, doc){
 				mongodb.close();
 				if(doc){
-					var user = new User(doc);
-					console.log("ddd:"+user.id);
-					callback(err, user);
+					var notes = new Notes(doc);
+					callback(err, notes);
 				} else {
 					callback(err, null);
 				}
@@ -58,26 +105,26 @@ Notes.get = function (email, callback){
 	});
 };
 
-Notes.checkLogin = function (loginInfo, callback){
+Notes.getOne = function (email, callback){
 	mongodb.open(function(err, db){
 		if(err){
+			mongodb.close();
 			return callback(err);
 		}
-		db.collection('users', function(err, collection){
+		db.collection('notes', function(err, collection){
 			if(err){
 				mongodb.close();
 				return callback(err);
 			}
-			collection.findOne(loginInfo ,function(err,doc){
+			collection.findOne({email: email}, function(err, doc){
 				mongodb.close();
 				if(doc){
-					var loginUser = new User(doc);
-					callback(err, loginUser);
+					var notes = new Notes(doc);
+					callback(err, notes);
 				} else {
-					err = 'Email or password is incorrect!';
 					callback(err, null);
 				}
 			});
 		});
 	});
-}
+};

@@ -12,7 +12,7 @@ var express = require('express')
 	, MongoStore = require('connect-mongo')(express)
 	, settings = require('./settings')
 	, partials = require('express-partials')
-	, flash = require('connect-flash');
+	, flash = require('connect-flash')
 var app = express();
 
 app.configure(function(){
@@ -28,23 +28,26 @@ app.configure(function(){
 	app.use(partials());
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
-	app.use(express.cookieParser());
-	app.use(flash());
+	
+	app.use(express.cookieParser(settings.cookieSecret));
 	app.use(express.session({
-		secret: settings.cookieSecret,
 		store: new MongoStore({
 			db: settings.db
-		})
+		}),
+		cookie: {
+			maxAge: 60000
+		}
 	}));
-	//app.use(flash());
+	app.use(flash());
 	app.use(function(req, res ,next){
+		//console.log("OK?:" + req.flash());
 		app.locals({
   			session: req.session?req.session:null,
   			email: req.session.user?req.session.user.email:null,
   			msg: req.flash('msg')?req.flash('msg'):null,
 			err: req.flash('err')?req.flash('err'):null,
 		});
-		console.log(app.locals);
+		//console.log(app.locals);
 		next();
 	});
 	app.use(app.router);
@@ -64,7 +67,8 @@ app.get('/reg', user.reg);
 app.get('/signin', user.signin);
 app.post('/signin', user.login);
 app.get('/logout', user.logout);
-app.post('/getnote', notes_info.getNote);
+app.post('/save', notes_info.insert);
+app.post('/getAll', notes_info.getNote);
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));

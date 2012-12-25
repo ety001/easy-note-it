@@ -1,0 +1,45 @@
+#note_list{
+	margin-top: 60px;
+}
+.note{
+	position: absolute;
+	display: block;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 1px;
+	-moz-border-radius: 1px;
+	-webkit-border-radius: 1px;
+	box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 4px 4px rgba(0,0,0,0.3);
+	-webkit-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+	font-family: Helvetica,Arial,sans-serif;
+	font-size: 14px;
+	line-height: 20px;
+	word-wrap: break-word;
+	white-space: normal;
+	cursor: move;
+}
+.note_content{
+	margin: 10px;
+	min-height: 140px;
+	padding: 4px;
+}
+.note_blue {
+	background: #7fd7f7;
+	border-color: #c1ecfb;
+}
+.loading {
+    -webkit-animation-name: x-loading-spinner-rotate;
+    -webkit-animation-duration: 0.8s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+}
+
+@-webkit-keyframes x-loading-spinner-rotate {
+    from {
+    -webkit-transform: rotate(30deg);
+    }
+    to {
+    -webkit-transform: rotate(330deg);
+    }
+}

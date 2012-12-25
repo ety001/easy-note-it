@@ -4,9 +4,11 @@
 		<title><%= title %></title>
 		<link rel="stylesheet" href="/stylesheets/bootstrap.css" />
 		<link rel="stylesheet" href="/stylesheets/bootstrap-responsive.css" />
+		<link rel="stylesheet" href="/stylesheets/style.css" />
+		<link rel="stylesheet" href="/stylesheets/jquery-ui.css" />
 	</head>
 	<body>
-		<div class="navbar navbar-inverse">
+		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container-fluid">
 					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -16,7 +18,7 @@
 					</a>
 					<a class="brand" href="/">Easy Note It</a>
 					<div class="nav-collapse collapse" id="top_control">
-						<% if(email){ %><button class="btn btn-primary pull-right" type="button" onclick="add_note();">+ Add</button><% } %>
+						<% if(email){ %><a href="#newNote" role="button" class="btn btn-primary pull-right" data-toggle="modal">+ Add</a><% } %>
 						<ul class="nav pull-right">
 							<% if( !email){ %>
 							<li><a href="/signin">Sign In</a></li>
@@ -38,7 +40,67 @@
 		</div>
 		<% if( !msg ){ %><div id="msg" class="alert alert-message"><%= msg %></div><% } %>
 		<%- body %>
+		<div id="newNote" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="newContent" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h3 id="newContent">New Note</h3>
+			</div>
+			<div class="modal-body">
+				<textarea id="newN" rows="5" style="width:95%;"></textarea>
+			</div>
+			<div class="modal-footer">
+				<span id="loading" style="display:none;"><i class="icon-refresh loading"></i>Saving...</span>
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+				<button class="btn btn-primary" onclick="save();">Save Note</button>
+			</div>
+		</div>
 		<script src="/javascripts/jquery.js"></script>
+		<script src="/javascripts/jquery-ui.js"></script>
 		<script src="/javascripts/bootstrap.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				$('.note').draggable();
+				$.ajax({
+					type: 'post',
+					url: '/getAll',
+					dataType: 'json',
+					beforeSend: function(){
+						$().show();
+					},
+					success: function(){
+						
+					}
+				});
+			});
+			function save(){
+				var content = $('#newN').val();
+				$.ajax({
+					type: 'post',
+					url: '/save',
+					data: {content: content},
+					dataType: 'json',
+					beforeSend: function(){
+						$('#loading').show();
+					},
+					success: function(result){
+						var id = result[0]._id;
+						var content = result[0].n_content;
+						var cate = result[0].n_cate;
+						var color = result[0].n_color;
+						var color_tag = ' note_blue ';
+						//to do ---color tag switch
+						var html = '<div class="note '+ color_tag +' span3" data-note-id="'+ id +'" style="left:555px; top: 237px;"><div class="note_content">'+ content +'</div></div>';
+						$('#note_list').append(html);
+						$('#loading').hide();
+						$('#newN').val('');
+						$('.note').draggable();
+						$('#newNote').modal('hide');
+					},
+					error: function(jqXHR, textStatus, errorThrown) {  
+						console.log('error ' + textStatus + " " + errorThrown);  
+					}
+				});
+			}
+		</script>
 	</body>
 </html>
