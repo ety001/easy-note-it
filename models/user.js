@@ -1,5 +1,6 @@
 var mongodb = require('../lib/db');
 var ObjectID = require('mongodb').ObjectID;
+var settings = require('../settings');
 
 function User(user){
 	this.id = user._id;
@@ -17,16 +18,18 @@ User.prototype.save = function save(callback){
 		if(err){
 			return callback(err);
 		}
-		db.collection('users', function(err, collection){
-			if(err){
-				mongodb.close();
-				return callback(err);
-			}
-			collection.insert(user, {safe: true}, function(err, user){
-				mongodb.close();
-				callback(err, user);
-			});
-		});
+    db.authenticate(settings.username, settings.password,function(){
+      db.collection('users', function(err, collection){
+			  if(err){
+				  mongodb.close();
+				  return callback(err);
+			  }
+			  collection.insert(user, {safe: true}, function(err, user){
+				  mongodb.close();
+				  callback(err, user);
+			  });
+		  });
+    });
 	});
 };
 
@@ -35,21 +38,24 @@ User.get = function get(email, callback){
 		if(err){
 			return callback(err);
 		}
-		db.collection('users', function(err, collection){
-			if(err){
-				mongodb.close();
-				return callback(err);
-			}
-			collection.findOne({email: email}, function(err, doc){
-				mongodb.close();
-				if(doc){
-					var user = new User(doc);
-					callback(err, user);
-				} else {
-					callback(err, null);
-				}
-			});
-		});
+    db.authenticate(settings.username, settings.password,function(){
+      db.collection('users', function(err, collection){
+			  if(err){
+			  	mongodb.close();
+			   	return callback(err);
+			  }
+			  collection.findOne({email: email}, function(err, doc){
+				  mongodb.close();
+				  if(doc){
+				  	var user = new User(doc);
+					  callback(err, user);
+				  } else {
+					  callback(err, null);
+				  }
+			  });
+		  });
+    });
+		
 	});
 };
 
@@ -58,21 +64,24 @@ User.checkLogin = function (loginInfo, callback){
 		if(err){
 			return callback(err);
 		}
-		db.collection('users', function(err, collection){
-			if(err){
-				mongodb.close();
-				return callback(err);
-			}
-			collection.findOne(loginInfo ,function(err,doc){
-				mongodb.close();
-				if(doc){
-					var loginUser = new User(doc);
-					callback(err, loginUser);
-				} else {
-					err = 'Email or password is incorrect!';
-					callback(err, null);
-				}
-			});
-		});
+    db.authenticate(settings.username, settings.password,function(){
+      db.collection('users', function(err, collection){
+			  if(err){
+				  mongodb.close();
+				  return callback(err);
+			  }
+			  collection.findOne(loginInfo ,function(err,doc){
+				  mongodb.close();
+				  if(doc){
+					  var loginUser = new User(doc);
+					  callback(err, loginUser);
+				  } else {
+					  err = 'Email or password is incorrect!';
+					  callback(err, null);
+				  }
+			  });
+		  });
+    });
+		
 	});
 }

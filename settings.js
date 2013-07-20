@@ -4,17 +4,17 @@ if(process.env.VCAP_SERVICES){
 }
 else{
   var mongo = {
-    "hostname":"localhost",
-    "port":27017,
-    "username":"",
-    "password":"",
-    "name":"",
+    "hostname":"ds027758.mongolab.com",
+    "port":27758,
+    "username":"noteit",
+    "password":"woqimm@note",
+    "name":"noteit",
     "db":"noteit"
   }
 }
 module.exports = {
 	//server port
-	port: 4000,
+	port: 3000,
 	//cookie
 	cookieSecret: 'noteitfasddfasdf',
 	//database

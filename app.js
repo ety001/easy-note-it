@@ -18,7 +18,7 @@ var app = express();
 app.configure(function(){
 	//server port
 	app.set('port', process.env.VMC_APP_PORT || settings.port);
-	app.set('host', process.env.VCAP_APP_HOST || 'localhost');
+	app.set('host', process.env.VCAP_APP_HOST || '0.0.0.0');
 	//view dir
 	app.set('views', __dirname + settings.view_dir + settings.templates_dir);
 	//view engine
@@ -33,7 +33,12 @@ app.configure(function(){
 	app.use(express.cookieParser(settings.cookieSecret));
 	app.use(express.session({
 		store: new MongoStore({
-			db: settings.db
+			db: settings.db,
+      host: settings.host,
+      port: settings.mongodb_port,
+      username: settings.username,
+      password: settings.password,
+      name: settings.name
 		}),
 		cookie: {
 			maxAge: 60000

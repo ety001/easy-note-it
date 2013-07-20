@@ -1,5 +1,6 @@
 var mongodb = require('../lib/db');
 var ObjectID = require('mongodb').ObjectID;
+var settings = require('../settings');
 
 function Notes(note){
 	this.id = note._id;
@@ -24,16 +25,18 @@ Notes.prototype.insert = function (callback){
 			mongodb.close();
 			return callback(err);
 		}
-		db.collection('notes', function(err, collection){
-			if(err){
-				mongodb.close();
-				return callback(err);
-			}
-			collection.insert(note, {safe: true}, function(err, note){
-				mongodb.close();
-				callback(err, note);
-			});
-		});
+    db.authenticate(settings.username, settings.password,function(){
+      db.collection('notes', function(err, collection){
+			  if(err){
+				  mongodb.close();
+				  return callback(err);
+			  }
+			  collection.insert(note, {safe: true}, function(err, note){
+				  mongodb.close();
+				  callback(err, note);
+			  });
+		  });
+    });
 	});
 };
 
@@ -46,16 +49,18 @@ Notes.prototype.update = function (callback){
 		if(err){
 			return callback(err);
 		}
-		db.collection('notes', function(err, collection){
-			if(err){
-				mongodb.close();
-				return callback(err);
-			}
-			collection.insert(user, {safe: true}, function(err, user){
-				mongodb.close();
-				callback(err, user);
-			});
-		});
+    db.authenticate(settings.username, settings.password,function(){
+      db.collection('notes', function(err, collection){
+			  if(err){
+				  mongodb.close();
+				  return callback(err);
+			  }
+			  collection.insert(user, {safe: true}, function(err, user){
+				  mongodb.close();
+				  callback(err, user);
+			  });
+		  });
+    });
 	});
 };
 
@@ -69,16 +74,18 @@ Notes.delete = function (note_id , callback){
 			mongodb.close();
 			return callback(err);
 		}
-		db.collection('notes', function(err, collection){
-			if(err){
-				mongodb.close();
-				return callback(err);
-			}
-			collection.findAndRemove(note, function(err, result){
-				mongodb.close();
-				callback(err, result);
-			});
-		});
+    db.authenticate(settings.username, settings.password,function(){
+      db.collection('notes', function(err, collection){
+			  if(err){
+				  mongodb.close();
+				  return callback(err);
+			  }
+			  collection.findAndRemove(note, function(err, result){
+				  mongodb.close();
+				  callback(err, result);
+			  });
+		  });
+    });
 	});
 };
 
@@ -88,20 +95,22 @@ Notes.getAll = function (conditions, callback){
 			mongodb.close();
 			return callback(err);
 		}
-		db.collection('notes', function(err, collection){
-			if(err){
-				mongodb.close();
-				return callback(err);
-			}
-			collection.find(conditions).toArray(function(err, docs) {
-				mongodb.close();
-				if(docs){
-					callback(err, docs);
-				} else {
-					callback(err, null);
-				}
-			});
-		});
+    db.authenticate(settings.username, settings.password,function(){
+      db.collection('notes', function(err, collection){
+			  if(err){
+				  mongodb.close();
+				  return callback(err);
+			  }
+			  collection.find(conditions).toArray(function(err, docs) {
+				  mongodb.close();
+				  if(docs){
+					  callback(err, docs);
+				  } else {
+					  callback(err, null);
+				  }
+			  });
+		  });
+    });
 	});
 };
 
@@ -111,20 +120,22 @@ Notes.getOne = function (id, callback){
 			mongodb.close();
 			return callback(err);
 		}
-		db.collection('notes', function(err, collection){
-			if(err){
-				mongodb.close();
-				return callback(err);
-			}
-			collection.find({_id:id}, {explain:true}).toArray(function(err, docs) {
-				mongodb.close();
-				if(docs){
-					var note = new Notes(docs);
-					callback(err, note);
-				} else {
-					callback(err, null);
-				}
-			});
-		});
+    db.authenticate(settings.username, settings.password,function(){
+      db.collection('notes', function(err, collection){
+			  if(err){
+				  mongodb.close();
+				  return callback(err);
+			  }
+			  collection.find({_id:id}, {explain:true}).toArray(function(err, docs) {
+				  mongodb.close();
+				  if(docs){
+					  var note = new Notes(docs);
+					  callback(err, note);
+				  } else {
+					  callback(err, null);
+				  }
+			  });
+		  });
+    });
 	});
 };
